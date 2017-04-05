@@ -29,61 +29,31 @@ public class SoccerClubInfoGetterActor extends UntypedActor {
 		log.debug("Received request to retrieve information for club(" + clubID + ")");
 		if (clubID != 0) {
 			String clubInfoAskedFor = this.targetRESTEndPoint + clubID;
-			/*getSender().tell(clubInfo,getSelf());
-		
-			CompletableFuture.supplyAsync(new Supplier<String>() {
-			    @Override
-			    public String get() {
-			        String s = Http.get("http://api.football-data.org/v1/teams/5").text();
-			        System.out.println("s =" + s);
-			        return (s);
-			        		// "Myself: DoneWithPong";
-			    }
-			}, getContext().system().dispatcher())
-	        .thenAccept(s -> getSender().tell(s, getSelf()));
-	     
-		*/
+			
 		pipe(
-					CompletableFuture.supplyAsync(new Supplier<String>() {
-					    @Override
-					    public String get() {
-					        String s = Http.get(clubInfoAskedFor).text();
-					        //System.out.println("s =" + s);
-					        return (s);
-					        		// "Myself: DoneWithPong";
-					    }
-					}),
-					getContext().system().dispatcher()
-				).to(getSender());
+				CompletableFuture.supplyAsync(new Supplier<String>() {
+					@Override
+					public String get() {
+						String s = Http.get(clubInfoAskedFor).text();
+						return (s);
+					}
+				}),
+				getContext().system().dispatcher()
+			).to(getSender());
 				
 		}
-		else {
+		else { // Emulating a failed call to the external service
 				Thread.sleep(2000);
 				getSender().tell("Site is unresponsive",getSelf());
 		}
 	}
 	
 	else {
-		System.out.println("Unknown Message [" + arg0 + "]");
+		log.info("Unknown Message [" + arg0 + "]");
 		unhandled(arg0);
 	}
   }
   
-  private Supplier<String> callService() {
-		
-	  return (new Supplier<String>() {
-		    @Override
-		    public String get() {
-		        String s = Http.get("http://api.football-data.org/v1/teams/5").text();
-		        System.out.println("s =" + s);
-		        return (s);
-		        		// "Myself: DoneWithPong";
-		    }
-		});
-  }  
-
-
-	
 	public static Props props(final String targetRESTEndPoint) {
 	    return Props.create(new Creator<SoccerClubInfoGetterActor>() {
 	      private static final long serialVersionUID = 1L;
