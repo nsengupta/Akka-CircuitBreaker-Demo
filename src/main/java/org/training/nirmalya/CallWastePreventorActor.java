@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 
 import org.javalite.http.*;
 import org.training.nirmalya.InteractionProtocol.ClubDetailsFromXternalSource;
-import org.training.nirmalya.InteractionProtocol.RetrievableClubIDMessage;
+import org.training.nirmalya.InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress;
 import org.training.nirmalya.InteractionProtocol.AdminFYIMessage;
 import org.training.nirmalya.InteractionProtocol.UnavailableClubDetails;
 
@@ -51,11 +51,12 @@ public class CallWastePreventorActor extends UntypedActor {
   @Override
   public void onReceive( Object arg0 ) throws Exception {
 	  
-    if ( arg0 instanceof RetrievableClubIDMessage ) {
+    if ( arg0 instanceof RetrievableClubIDMessageWithFinalDeliveryAddress ) {
     	
     	
-    	final RetrievableClubIDMessage m = (RetrievableClubIDMessage)arg0;
+    	final RetrievableClubIDMessageWithFinalDeliveryAddress m = (RetrievableClubIDMessageWithFinalDeliveryAddress)arg0;
 		int clubID = m.clubID;
+		ActorRef originalSender = m.originalSender;
 		log.info("Received request to retrieve information for club(" + clubID + ")");
 		
 		String clubInfo = this.externalServiceEndPoint + clubID;
@@ -70,7 +71,7 @@ public class CallWastePreventorActor extends UntypedActor {
 								    public ClubDetailsFromXternalSource get() {
 										
 								        String s = Http.get(clubInfo).text();
-								        return (new ClubDetailsFromXternalSource(s));
+								        return (new ClubDetailsFromXternalSource(s,originalSender));
 								        
 								    } // end of get()
 								} // end of supplier

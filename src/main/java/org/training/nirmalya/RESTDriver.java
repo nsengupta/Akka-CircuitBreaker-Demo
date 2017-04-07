@@ -24,7 +24,7 @@ public class RESTDriver {
 	    
 	    final Inbox inbox = Inbox.create(system);
 	    
-	    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(5));
+	    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(0));
 	    
 	    try {
 			System.out.println("Received from external service: " + (String)inbox.receive(Duration.create(10, TimeUnit.SECONDS)));

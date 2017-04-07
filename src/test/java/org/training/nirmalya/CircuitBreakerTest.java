@@ -81,7 +81,7 @@ public class CircuitBreakerTest {
 				TestActorRef.create(system, propsCB, "CircuitBreakerActor");
 		
 		testActorForCB.tell(
-				new InteractionProtocol.RetrievableClubIDMessage(5), 
+				new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(5), 
 				testDriverEnv.getRef()
 		);
 		
@@ -135,7 +135,7 @@ public class CircuitBreakerTest {
 		// 2 successive calls.
 		IntStream.of(0,0).forEach((i) -> {    // 0 == invalid club ID
 			testActorForCB.tell(
-					new InteractionProtocol.RetrievableClubIDMessage(i), 
+					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(i), 
 					testDriverEnv.getRef()
 			);
 			Object m1 = 
@@ -187,7 +187,7 @@ public class CircuitBreakerTest {
 		// 2 successive calls.
 		IntStream.of(0,0).forEach((i) -> {    // 0 == invalid club ID
 			testActorForCB.tell(
-					new InteractionProtocol.RetrievableClubIDMessage(i), 
+					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(i), 
 					testDriverEnv.getRef()
 			);
 			Object m1 = 
@@ -261,7 +261,7 @@ public class CircuitBreakerTest {
 		// 2 successive calls.
 		IntStream.of(0,0).forEach((i) -> {    // 0 == invalid club ID
 			testActorForCB.tell(
-					new InteractionProtocol.RetrievableClubIDMessage(i), 
+					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(i), 
 					testDriverEnv.getRef()
 			);
 			Object m1 = 
@@ -311,7 +311,7 @@ public class CircuitBreakerTest {
 		assertThat(m4.stateDesc, equalTo("CB:HalfOpen"));
 		
 		testActorForCB.tell(
-				new InteractionProtocol.RetrievableClubIDMessage(6), 
+				new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(6), 
 				testDriverEnv.getRef()
 		);
 		

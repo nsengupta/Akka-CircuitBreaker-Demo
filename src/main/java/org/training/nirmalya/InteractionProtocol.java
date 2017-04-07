@@ -2,8 +2,24 @@ package org.training.nirmalya;
 
 import java.io.Serializable;
 
+import akka.actor.ActorRef;
+
 public class InteractionProtocol {
 	
+	public static class TimedOutClubDetails { 
+		
+		private static final long serialVersionUID = 1L;
+		
+		public final ActorRef toBSentTo;
+
+		public TimedOutClubDetails(ActorRef toBSentTo) {
+			super();
+			this.toBSentTo = toBSentTo;
+		}
+		
+		
+	}
+
 	public static class NoCircuitBreakerYetMessage {
 
 		private static final long serialVersionUID = 1L;
@@ -40,6 +56,24 @@ public class InteractionProtocol {
 		}
 	}
 	
+	public static class RetrievableClubIDMessageWithFinalDeliveryAddress implements Serializable { 
+		
+		private static final long serialVersionUID = 1L;
+		
+		public final int clubID;
+
+		public final ActorRef originalSender;
+		
+		public RetrievableClubIDMessageWithFinalDeliveryAddress(int clubID, ActorRef originalSender) {
+			this.clubID = clubID;
+			this.originalSender = originalSender;
+		}
+
+		public String toString() {
+			return ("RetrievableClubIDMessageWithFinalDeliveryAddress");
+		}
+	}
+	
 	public static class AdminFYIMessage implements Serializable { 
 		
 		private static final long serialVersionUID = 1L;
@@ -60,9 +94,12 @@ public class InteractionProtocol {
 		private static final long serialVersionUID = 1L;
 		
 		public final String clubInfoAsJSON;
+
+		public final ActorRef originallyAskedBy;
 		
-		public ClubDetailsFromXternalSource(String clubInfoAsJSON) {
+		public ClubDetailsFromXternalSource(String clubInfoAsJSON, ActorRef orignallyAskedBy) {
 			this.clubInfoAsJSON = clubInfoAsJSON;
+			this.originallyAskedBy = orignallyAskedBy;
 		}
 
 		public String toString() {

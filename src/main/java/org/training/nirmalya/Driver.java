@@ -19,14 +19,6 @@ public class Driver {
 
   public static void main( String[] args ) throws Exception {
 	  
-	ArrayList<Integer> clubIDsToSearchFor = new ArrayList<Integer>();
-	
-	clubIDsToSearchFor.add(5);
-	clubIDsToSearchFor.add(0);
-	clubIDsToSearchFor.add(3);
-	clubIDsToSearchFor.add(1);
-	clubIDsToSearchFor.add(0);
-	  
     ActorSystem system = ActorSystem.create("CircuitBreakerDemo");
     
     final ActorRef externalService = system.actorOf(
