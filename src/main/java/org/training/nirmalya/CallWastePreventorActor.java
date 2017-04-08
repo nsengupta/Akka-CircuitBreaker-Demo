@@ -3,24 +3,20 @@ package org.training.nirmalya;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import akka.dispatch.Futures;
-import akka.dispatch.Mapper;
-import akka.dispatch.OnComplete;
+
 import akka.dispatch.OnFailure;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.Creator;
-import akka.japi.Function;
+
 import akka.pattern.CircuitBreaker;
 import akka.pattern.PatternsCS;
 import akka.util.Timeout;
-import scala.compat.java8.FutureConverters;
-import scala.concurrent.Future;
+
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -40,7 +36,7 @@ public class CallWastePreventorActor extends UntypedActor {
   public static final int MAX_FAILURES = 2;
   public static final Timeout ASK_TIMEOUT = Timeout.apply(4000, TimeUnit.MILLISECONDS );
   public static final FiniteDuration CALL_TIMEOUT = Duration.create( 2000, TimeUnit.MILLISECONDS );
-  public static final FiniteDuration RESET_TIMEOUT = Duration.create( 2, TimeUnit.SECONDS );
+  public static final FiniteDuration RESET_TIMEOUT = Duration.create( 3, TimeUnit.SECONDS );
 
   private final CircuitBreaker circuitBreaker;
   private final ActorRef sysAdminService;
@@ -74,8 +70,8 @@ public class CallWastePreventorActor extends UntypedActor {
 								        return (new ClubDetailsFromXternalSource(s,originalSender));
 								        
 								    } // end of get()
-								} // end of supplier
-						   )  // end of supplyAsync
+								} // end of supplier constructor
+						   )  // end of supplyAsync() function
 					  );   // end of return
 				 } // end of call()
 				 
@@ -117,6 +113,7 @@ public class CallWastePreventorActor extends UntypedActor {
 			.to(getSender());	
 		}
 		else {
+			
 			PatternsCS
 			.pipe(
 					circuitBreaker.callWithCircuitBreakerCS(workingCallable),

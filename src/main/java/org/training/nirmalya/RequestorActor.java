@@ -10,7 +10,7 @@ import java.util.function.Function;
 import org.training.nirmalya.InteractionProtocol.ClubDetailsFromXternalSource;
 import org.training.nirmalya.InteractionProtocol.RetrievableClubIDMessage;
 import org.training.nirmalya.InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress;
-import org.training.nirmalya.Driver.Tick;
+import org.training.nirmalya.CBDriver.Tick;
 import org.training.nirmalya.InteractionProtocol.TimedOutClubDetails;
 
 import akka.actor.ActorRef;
@@ -44,7 +44,7 @@ public class RequestorActor extends UntypedActor {
     	  
     	  int clubID = ((RetrievableClubIDMessage)arg0).clubID;
     	  
-    	  log.info("Received request to retrieve info for club [{}] " +clubID);
+    	  //log.info("Received request to retrieve info for club [" +clubID + "]");
     	  
     	  final ActorRef infoIsSoughtBy = getSender();
 
@@ -77,22 +77,23 @@ public class RequestorActor extends UntypedActor {
 				  .to(getSelf()); 
     	  
       } else if ( arg0 instanceof ClubDetailsFromXternalSource) {
-          log.info("Received [{}]" + arg0);
+          //log.info("Received {}" + arg0);
           ClubDetailsFromXternalSource m = (ClubDetailsFromXternalSource)arg0;
           ActorRef originalSender = m.originallyAskedBy;
           String details          = m.clubInfoAsJSON;
           originalSender.tell (details, getSelf());
           
       } else if ( arg0 instanceof TimedOutClubDetails ) {
-        log.info("Received [{}]" + arg0);
+        //log.info("Received {}" + arg0);
         
         TimedOutClubDetails m = (TimedOutClubDetails) arg0;
         
+        log.info("Original requestor [" + m.toBSentTo.path()+"]");
         m.toBSentTo.tell("Service unresponsive, try again later", getSelf());
    
       }
       else {
-    	  log.info("Received unknown message of type [{}]",arg0.getClass());
+    	  log.info("Received unknown message of type [" + arg0.getClass() + "]");
     	  unhandled(arg0);
       }
     }

@@ -25,7 +25,7 @@ public class CircuitBreakerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		system = ActorSystem.create("SmartPongActorTestSystem");
+		system = ActorSystem.create("CircuitBreakerTestSystem");
 	}
 
 	@After
@@ -81,7 +81,9 @@ public class CircuitBreakerTest {
 				TestActorRef.create(system, propsCB, "CircuitBreakerActor");
 		
 		testActorForCB.tell(
-				new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(5), 
+				new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(
+						5,testDriverEnv.getRef()
+				), 
 				testDriverEnv.getRef()
 		);
 		
@@ -135,7 +137,8 @@ public class CircuitBreakerTest {
 		// 2 successive calls.
 		IntStream.of(0,0).forEach((i) -> {    // 0 == invalid club ID
 			testActorForCB.tell(
-					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(i), 
+					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(
+							i,testDriverEnv.getRef()), 
 					testDriverEnv.getRef()
 			);
 			Object m1 = 
@@ -187,7 +190,9 @@ public class CircuitBreakerTest {
 		// 2 successive calls.
 		IntStream.of(0,0).forEach((i) -> {    // 0 == invalid club ID
 			testActorForCB.tell(
-					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(i), 
+					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(
+							i,testDriverEnv.getRef()
+					), 
 					testDriverEnv.getRef()
 			);
 			Object m1 = 
@@ -215,7 +220,7 @@ public class CircuitBreakerTest {
 		assertThat(m3.stateDesc, equalTo("CB:Open"));
 		
 		try {
-			Thread.sleep(2500);
+			Thread.sleep(4500);  // hard-coded waiting time, to let the CircuitBreaker's RESET_TIME to elapse
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -261,7 +266,9 @@ public class CircuitBreakerTest {
 		// 2 successive calls.
 		IntStream.of(0,0).forEach((i) -> {    // 0 == invalid club ID
 			testActorForCB.tell(
-					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(i), 
+					new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(
+							i,testDriverEnv.getRef()
+					),
 					testDriverEnv.getRef()
 			);
 			Object m1 = 
@@ -289,7 +296,7 @@ public class CircuitBreakerTest {
 		assertThat(m3.stateDesc, equalTo("CB:Open"));
 		
 		try {
-			Thread.sleep(2500);
+			Thread.sleep(3500);  // RESET_TIMEOUT in CallWastePreventor is 3 seconds.
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -311,7 +318,9 @@ public class CircuitBreakerTest {
 		assertThat(m4.stateDesc, equalTo("CB:HalfOpen"));
 		
 		testActorForCB.tell(
-				new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(6), 
+				new InteractionProtocol.RetrievableClubIDMessageWithFinalDeliveryAddress(
+						7,testDriverEnv.getRef()
+				), 
 				testDriverEnv.getRef()
 		);
 		

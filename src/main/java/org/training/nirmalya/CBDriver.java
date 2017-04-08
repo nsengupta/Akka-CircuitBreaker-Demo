@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class Driver {
+public class CBDriver {
 
   public static void main( String[] args ) throws Exception {
 	  
@@ -35,42 +35,56 @@ public class Driver {
     
     final Inbox inbox = Inbox.create(system);
     
-    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(5));
     inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(0));
-    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(0));
-    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(5));
     try {
-		System.out.println("Clubinfo received: " + 
+		System.out.println("** Client asked for clubinfo(0), received [ " + 
                            (String)inbox.receive(
                         		   Duration.create(5, TimeUnit.SECONDS)
-                           ));
-		System.out.println("Clubinfo received: " + 
-                (String)inbox.receive(
-             		   Duration.create(5, TimeUnit.SECONDS)
-                ));
-		System.out.println("Clubinfo received: " + 
-                (String)inbox.receive(
-             		   Duration.create(5, TimeUnit.SECONDS)
-                ));
-		System.out.println("Clubinfo received: " + 
-                (String)inbox.receive(
-             		   Duration.create(5, TimeUnit.SECONDS)
-                ));
-	} catch (TimeoutException e1) {
+                           ) + "]");
+    }catch (TimeoutException e1) {
 	
 		e1.printStackTrace();
-	}
-
+	};
+	
+    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(0));
+    try {
+		System.out.println("** Client asked for clubinfo(0), received [ " + 
+                           (String)inbox.receive(
+                        		   Duration.create(5, TimeUnit.SECONDS)
+                           ) + "]");
+    }catch (TimeoutException e1) {
+	
+		e1.printStackTrace();
+	};
     
-    Thread.sleep( 10000 );
+    Thread.sleep(2000);
+    
+    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(3));
+    try {
+		System.out.println("** Client asked for clubinfo(3), received [ " + 
+                           (String)inbox.receive(
+                        		   Duration.create(5, TimeUnit.SECONDS)
+                           ) + "]");
+    }catch (TimeoutException e1) {
+	
+		e1.printStackTrace();
+	};
+	
+	Thread.sleep(2500);
+    
+    inbox.send(requestor,new InteractionProtocol.RetrievableClubIDMessage(7));
+    try {
+		System.out.println("** Client asked for clubinfo(7), received [ " + 
+                           (String)inbox.receive(
+                        		   Duration.create(5, TimeUnit.SECONDS)
+                           ) + "]");
+    }catch (TimeoutException e1) {
+	
+		e1.printStackTrace();
+	};
+    
+    Thread.sleep( 10000 ); // Hold the ActorSystem till all interactions are complete
 
     system.terminate();
   }
-
-  
-
-  public static class Tick {
-
-  }
-
 }
