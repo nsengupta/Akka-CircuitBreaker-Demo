@@ -77,17 +77,13 @@ public class RequestorActor extends UntypedActor {
 				  .to(getSelf()); 
     	  
       } else if ( arg0 instanceof ClubDetailsFromXternalSource) {
-          //log.info("Received {}" + arg0);
           ClubDetailsFromXternalSource m = (ClubDetailsFromXternalSource)arg0;
           ActorRef originalSender = m.originallyAskedBy;
           String details          = m.clubInfoAsJSON;
           originalSender.tell (details, getSelf());
           
       } else if ( arg0 instanceof TimedOutClubDetails ) {
-        //log.info("Received {}" + arg0);
-        
-        TimedOutClubDetails m = (TimedOutClubDetails) arg0;
-        
+        TimedOutClubDetails m = (TimedOutClubDetails) arg0;        
         log.info("Original requestor [" + m.toBSentTo.path()+"]");
         m.toBSentTo.tell("Service unresponsive, try again later", getSelf());
    
